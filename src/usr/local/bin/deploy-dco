@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+source /usr/local/includes/common.sh
+source /usr/local/includes/dco.sh
+
+test -f .ckenv && source .ckenv || echo "CKENV: missing!"
+DOCKER_OPTS_PRE="${DOCKER_OPTS_PRE}"
+
+echo "### Deploying with docker-compose"
+setup_ssh
+install_dco
+docker_prune
+deploy_dco
+push_metrics /tmp/metrics

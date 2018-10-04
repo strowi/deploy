@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+source /usr/local/includes/common.sh
+source /usr/local/includes/rco.sh
+
+############## end of functions ######################
+
+test -f .ckenv && source .ckenv || echo "CKENV: missing!"
+RANCHER_OPTS_PRE="--project-name ${CI_PROJECT_PATH_SLUG} ${RANCHER_OPTS_PRE}"
+
+#TEMPLATE_SOURCE_DIR=${TEMPLATE_SOURCE_DIR:-$PWD/manifests}
+#TEMPLATE_TARGET_DIR=${TEMPLATE_TARGET_DIR:-$PWD/manifests/.generated}
+
+
+echo "### Deploying with rancher-compose"
+setup_ssh
+deploy_rco
+push_metrics /tmp/metrics

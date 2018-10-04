@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -e
+
+source /usr/local/includes/common.sh
+source /usr/local/includes/k8.sh
+
+#### end of functions #####
+
+BASENAME="$(basename $0)"
+export TIMESTAMP="$(date +%d%m%y%H%M%S)"
+export REVISION="${TIMESTAMP}"                # needed by kubernetes-deploy
+
+# tbd
+test -f .ckenv && source .ckenv || echo ".ckenv: poof, not sourcing!"
+
+TEMPLATE_MANIFESTS_DIR="$(realpath ${KUBE_MANIFESTS_DIR:-$PWD/manifests})"
+TEMPLATE_CONFIGMAP_DIR="${KUBE_CONFIGMAP_DIR:-$PWD/configmaps}"
+TEMPLATE_TARGET_DIR="${KUBE_BUILD_DIR:-/tmp/deploy}"
+
+# copy related source folders to a tmp-folder, from which to deloy, so outside folder
+# doesn't get crowded
+TEMPLATE_TMP_DIR=/tmp/source
+
+mkdir -p ${TEMPLATE_TMP_DIR}/manifests/
+cp -a ${TEMPLATE_MANIFESTS_DIR}/* ${TEMPLATE_TMP_DIR}/manifests/
+
+TEMPLATE_SOURCE_DIR="${TEMPLATE_TMP_DIR}/manifests"
+
+
+## running order
+prep_kube_domain
+apply_rbac_permissions
+prep_kube_configmaps
+envsubst_vars
+deploy_k8
+push_metrics /tmp/metrics
+
+echo "# Finished, all successful (at least supposed to be down here...)"
