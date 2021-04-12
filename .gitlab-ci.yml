@@ -14,7 +14,7 @@ stages:
 
 # "build_image"                        -> "${CI_REGISTRY_IMAGE}"
 # "build_image $sub_image ./sub_dir/"  -> "${CI_REGISTRY_IMAGE}/sub_name
-# always tagged + pushed with:
+# always tagged + pushed with:release
 #   - ":${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}"
 #   - ":${CI_COMMIT_REF_SLUG}"
 #   - ":latest" (NOT pushed, for building dependent images)
@@ -23,17 +23,6 @@ docker:build:
   stage: build
   script:
     - build_image
-
-# "release_latest"                      -> "${CI_REGISTRY_IMAGE}"
-# "release_latest./sub_dir/"            -> "${CI_REGISTRY_IMAGE}/sub_name
-# push current "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}" as ":latest"
-docker:release:
-  extends: .build
-  stage: release
-  script:
-    - release_latest
-  only:
-    - master
 
 container_scanning:
   extends: .container_scanning
@@ -47,6 +36,9 @@ dgoss:test:
   script:
     - dgoss_run ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} sleep 5s
 
+# "release_latest"                      -> "${CI_REGISTRY_IMAGE}"
+# "release_latest./sub_dir/"            -> "${CI_REGISTRY_IMAGE}/sub_name
+# push current "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}" as ":latest"
 release:
   extends: .build
   stage: release
