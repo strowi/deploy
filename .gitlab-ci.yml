@@ -44,9 +44,9 @@ release:
   stage: release
   script:
     - release_latest
-    - docker tag "$CI_REGISTRY_IMAGE" "strowi/varnish"
+    - docker tag "$CI_REGISTRY_IMAGE" "strowi/$CI_PROJECT_NAME"
     - echo $DOCKER_TOKEN | docker login -u strowi --password-stdin
-    - docker push "strowi/varnish"
+    - docker push "strowi/$CI_PROJECT_NAME"
   only:
     - master
 
