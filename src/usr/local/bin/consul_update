@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# consul server
+CONSUL_SERVER=""
+
+# service containing our endpoints/service_ids
+SERVICE="$1"
+[[ -z $SERVICE ]] && echo "## Missing Variable: SERVICE" && exit 1
+
+# port to use for service
+PORT="$2"
+[[ -z $PORT ]] && echo "## Missing Variable: PORT" && exit 1
+
+# get additional tags "--tag=*" and TAG_REMOVE
+for i in "$@"; do
+  TAG=""
+  case $i in
+    --remove=*)
+      TAG_REMOVE="${i#*=}"
+      shift # past argument=value
+      ;;
+    --tag=*)
+      TAG="${i#*=}"
+      TAGLIST="$TAGLIST --tag=$TAG"
+      shift # past argument=value
+      ;;
+  esac
+done
+
+# project to TAG_REMOVE
+[[ -z $TAG_REMOVE ]] && echo "## Missing Variable: TAG_REMOVE / CI_PROJECT_PATH_SLUG" && exit 1
+
+# add repo-slug as tag if exists
+if [[ -n $CI_PROJECT_PATH_SLUG ]]; then
+  TAGLIST="$TAGLIST --tag=${TAG_REMOVE} --tag=${CI_PROJECT_PATH_SLUG} "
+else
+  TAGLIST="$TAGLIST --tag=${TAG_REMOVE} "
+fi
+
+echo "# CONSUL      = ${CONSUL_SERVER}"
+echo "# SERVICE     = $SERVICE"
+echo "# PORT        = $PORT"
+echo "# TAG_REMOVE  = $TAG_REMOVE"
+echo "# TAGLIST     = $TAGLIST"
+
+# list our existing service_ids from $service
+SERVICE_IDS="$(curl --silent "http://${CONSUL_SERVER}/v1/catalog/service/${SERVICE}?tag=${TAG_REMOVE}" | jq '.[].ServiceID' | sed 's/"//g')"
+
+echo "# deregistering svc: $SERVICE TAG_REMOVE: $TAG_REMOVE"
+if [[ -n $SERVICE_IDS ]]; then
+  # remove all existing service_ids from consul
+  for id in ${SERVICE_IDS}; do
+    echo " - id: $id"
+    consul-cli service deregister --consul="${CONSUL_SERVER}" "$id"
+  done
+else
+  echo " - nothing to de-register"
+fi
+echo ""
+
+# add all endpoints again with the values SSH_REMOTE:$PORT
+echo "# registering svc: $SERVICE taglist: $TAGLIST"
+for host in $SSH_REMOTE; do
+  echo " - id: $host-$PORT"
+  # shellcheck disable=SC2086
+  consul-cli service register --consul="${CONSUL_SERVER}" --address="$host" \
+    --id="$host-${PORT}" \
+    --port="${PORT}" \
+    --tag team-sys \
+    $TAGLIST \
+    "${SERVICE}"
+done

@@ -3,35 +3,70 @@ include:
     file: '/build.yml'
   - project: 'strowi/ci-templates'
     file: '/tests.yml'
+  - project: 'strowi/ci-templates'
+    file: '/k3d.yml'
 
 stages:
   - build
   - test
   - release
+  - deploy
 
-bbuild:
+
+# "build_image"                        -> "${CI_REGISTRY_IMAGE}"
+# "build_image $sub_image ./sub_dir/"  -> "${CI_REGISTRY_IMAGE}/sub_name
+# always tagged + pushed with:
+#   - ":${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}"
+#   - ":${CI_COMMIT_REF_SLUG}"
+#   - ":latest" (NOT pushed, for building dependent images)
+docker:build:
   extends: .build
   stage: build
   script:
     - build_image
 
-container_scanning:
-  extends: .container_scanning
-
-dgoss:
-  extends: .dgoss
-  stage: test
-  script:
-    - dgoss_run $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG sleep 5s
-
-release:
+# "release_latest"                      -> "${CI_REGISTRY_IMAGE}"
+# "release_latest./sub_dir/"            -> "${CI_REGISTRY_IMAGE}/sub_name
+# push current "${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHA}" as ":latest"
+docker:release:
   extends: .build
   stage: release
   script:
     - release_latest
-    - docker login -u "strowi" -p "$DOCKER_TOKEN" "docker.io"
-    - docker tag "$CI_REGISTRY_IMAGE:latest" "strowi/alpine-squid"
-    - docker push "strowi/alpine-squid"
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+  only:
+    - master
 
+container_scanning:
+  extends: .container_scanning
+  # parallel:
+  #   matrix:
+  #     - SUB_IMAGE_NAME:
+  #       - /xyz
+
+dgoss:test:
+  extends: .dgoss
+  script:
+    - dgoss_run ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} sleep 5s
+
+# deploy-tests:
+#   stage: test
+#   extends: .k3d
+#   image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
+#   variables:
+#     DOCKER_HOST: tcp://docker:2376
+#     DOCKER_TLS_CERTDIR: "/certs"
+#     DOCKER_TLS_VERIFY: 1
+#     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+#     CI_ENVIRONMENT_SLUG: testing
+#   script:
+#     - start_k3d
+#     - deploy-k8
+#     - get_pod nginx-krane
+#     - deploy-helm
+#     - get_pod nginx-helm
+#     - kubectl get deploy,po --all-namespaces
+#   parallel:
+#     matrix:
+#       - K3D_VERSION:
+#         - "rancher/k3s:v1.18.15-k3s1"
+#         - "rancher/k3s:v1.19.8-k3s1"

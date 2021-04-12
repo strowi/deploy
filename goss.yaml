@@ -1,0 +1,88 @@
+---
+file:
+  /bin/bash:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/envsubst:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/bin/git:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/bin/rsync:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/bin/ssh:
+    exists: true
+    mode: "0755"
+    owner: root
+    filetype: file
+    contains: []
+  /usr/bin/tar:
+    exists: true
+    mode: "0777"
+    owner: root
+    group: root
+    linked-to: /bin/tar
+    filetype: symlink
+    contains: []
+  /usr/local/bin/deploy-dco:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/deploy-k8:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/deploy-k8-sys:
+    exists: true
+    mode: "0777"
+    owner: root
+    group: root
+    linked-to: deploy-k8
+    filetype: symlink
+    contains: []
+  /usr/local/bin/docker-compose:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+  /usr/local/bin/kubectl:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
+
+  /usr/local/bin/consul_update:
+    exists: true
+    mode: "0755"
+    owner: root
+    group: root
+    filetype: file
+    contains: []
