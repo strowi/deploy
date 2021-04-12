@@ -2,11 +2,18 @@
 
 set -e
 
+# shellcheck source=src/usr/local/includes/common.sh
 source /usr/local/includes/common.sh
+# shellcheck source=src/usr/local/includes/dco.sh
 source /usr/local/includes/dco.sh
 
-test -f .ckenv && source .ckenv || echo "CKENV: missing!"
+SSH_REMOTE_DST="$(basename "$PWD")"
+SSH_USERNAME="${CI_USER:-ci}"
 DOCKER_OPTS_PRE="${DOCKER_OPTS_PRE}"
+DOCKER_OPTS_TRAILING="${DOCKER_OPTS_TRAILING}"
+
+export SSH_REMOTE_DST
+export SSH_USERNAME
 
 echo "### Deploying with docker-compose"
 setup_ssh

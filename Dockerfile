@@ -1,9 +1,11 @@
 FROM ruby:alpine
-LABEL maintainer="Roman v. Gemmeren <roman.van-gemmeren@chefkoch.de>"
+LABEL maintainer="Roman v. Gemmeren <strowi@hasnoname.de>"
 
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
 ENV PUSHGATEWAY=""
+ENV CONSUL_SERVER=""
+
 ARG BUILD_DEPS="g++ make"
 
 # install defaults

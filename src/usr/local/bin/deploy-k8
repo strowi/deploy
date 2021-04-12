@@ -2,38 +2,43 @@
 
 set -e
 
+# shellcheck source=src/usr/local/includes/common.sh
 source /usr/local/includes/common.sh
+# shellcheck source=src/usr/local/includes/k8.sh
 source /usr/local/includes/k8.sh
 
 #### end of functions #####
 
-BASENAME="$(basename $0)"
-export TIMESTAMP="$(date +%d%m%y%H%M%S)"
-export REVISION="${TIMESTAMP}"                # needed by kubernetes-deploy
+BASENAME="$(basename "$0")"
+TIMESTAMP="$(date +%d%m%y%H%M%S)"
+REVISION="${TIMESTAMP}" # needed by krane
 
-# tbd
-test -f .ckenv && source .ckenv || echo ".ckenv: poof, not sourcing!"
+export BASENAME TIMESTAMP REVISION
 
-TEMPLATE_MANIFESTS_DIR="$(realpath ${KUBE_MANIFESTS_DIR:-$PWD/manifests})"
+TEMPLATE_MANIFESTS_DIR="$(realpath "${KUBE_MANIFESTS_DIR:-$PWD/manifests}")"
 TEMPLATE_CONFIGMAP_DIR="${KUBE_CONFIGMAP_DIR:-$PWD/configmaps}"
-TEMPLATE_TARGET_DIR="${KUBE_BUILD_DIR:-/tmp/deploy}"
+TEMPLATE_TARGET_DIR="${KUBE_BUILD_DIR:-$PWD/.deploy/envusbst}"
+# shellcheck disable=SC2034
+TEMPLATE_DEPLOY_DIR="${KUBE_BUILD_DIR:-$PWD/.deploy/krane}"
+TEMPLATE_TMP_DIR=/tmp/source
+TEMPLATE_SOURCE_DIR="${TEMPLATE_TMP_DIR}/manifests"
+
+export TEMPLATE_MANIFESTS_DIR TEMPLATE_CONFIGMAP_DIR TEMPLATE_TARGET_DIR TEMPLATE_SOURCE_DIR
 
 # copy related source folders to a tmp-folder, from which to deloy, so outside folder
 # doesn't get crowded
-TEMPLATE_TMP_DIR=/tmp/source
 
-mkdir -p ${TEMPLATE_TMP_DIR}/manifests/
-cp -a ${TEMPLATE_MANIFESTS_DIR}/* ${TEMPLATE_TMP_DIR}/manifests/
-
-TEMPLATE_SOURCE_DIR="${TEMPLATE_TMP_DIR}/manifests"
-
+mkdir -p "${TEMPLATE_TMP_DIR}"/manifests/
+cp -Lr "${TEMPLATE_MANIFESTS_DIR}"/* "${TEMPLATE_TMP_DIR}"/manifests/
 
 ## running order
 prep_kube_domain
-apply_rbac_permissions
+#apply_rbac_permissions
 prep_kube_configmaps
+prep_kube_imagePullSecret
 envsubst_vars
 deploy_k8
 push_metrics /tmp/metrics
+cleanup
 
 echo "# Finished, all successful (at least supposed to be down here...)"

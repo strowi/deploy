@@ -1,85 +1,37 @@
-image: docker:latest
+include:
+  - project: 'strowi/ci-templates'
+    file: '/build.yml'
+  - project: 'strowi/ci-templates'
+    file: '/tests.yml'
 
 stages:
   - build
   - test
   - release
 
-build:
+bbuild:
+  extends: .build
   stage: build
   script:
-    - build
+    - build_image
+
+container_scanning:
+  extends: .container_scanning
+
+dgoss:
+  extends: .dgoss
+  stage: test
+  script:
+    - dgoss_run $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG sleep 5s
 
 release:
+  extends: .build
   stage: release
   script:
-    - release_container "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"  # push as :latest
-  only:
-    - master
+    - release_latest
+    - docker login -u "strowi" -p "$DOCKER_TOKEN" "docker.io"
+    - docker tag "$CI_REGISTRY_IMAGE:latest" "strowi/alpine-squid"
+    - docker push "strowi/alpine-squid"
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "master"'
 
-.devops: &devops |
-  # wrapper around container building
-  # build
-  #   - builds default Dockerfile -> reponame:latest
-  # build $1
-  #   - builds Dockerfile.$1 -> reponame:$1
-  #
-  function build() {
-
-    if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      echo ""
-    fi
-
-    if [[ -n "$2" ]]; then
-      echo "Building docker image from $2 / Dockerfile.$1 ..."
-      docker build -t "$CI_REGISTRY_IMAGE/$2:${CI_COMMIT_REF_SLUG}_${1}" -f Dockerfile.$1 $2
-      echo "Pushing to GitLab Container Registry..."
-      docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG_$1"
-
-    elif [[ -n "$1" ]]; then
-      echo "Building docker image from Dockerfile.$1 ..."
-      docker build -t "$CI_REGISTRY_IMAGE:${CI_COMMIT_REF_SLUG}_${1}" -f Dockerfile.$1 .
-      echo "Pushing to GitLab Container Registry..."
-      docker push "$CI_REGISTRY_IMAGE:${CI_COMMIT_REF_SLUG}_${1}"
-    else
-      echo "Building docker image from Dockerfile ..."
-      docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-      echo "Pushing to GitLab Container Registry..."
-      docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-    fi
-    echo ""
-  }
-
-  function release_container() {
-    if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      echo ""
-    fi
-
-    if [[ -n "$1" ]]; then
-      docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-      docker tag "$1" "$CI_REGISTRY_IMAGE"
-      docker push "$CI_REGISTRY_IMAGE"
-    fi
-  }
-
-  function docker_setup(){
-   if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-      echo ""
-    fi
-  }
-
-  function dgoss_wrapper(){
-    echo "Logging to GitLab Container Registry with CI credentials..."
-    docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-    GOSS_FILES_STRATEGY=cp dgoss $@
-
-  }
-
-before_script:
-  - *devops
