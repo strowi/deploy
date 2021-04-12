@@ -1,6 +1,15 @@
 # Deploy-Container
 
-This is a general-purpose deploy-container for deploying *k8s/rancher-compose/
+Repo-Url: [https://gitlab.com/strowi/deploy](https://gitlab.com/strowi/deploy)
+
+## Docker Image
+
+Should be available on docker and gitlab:
+
+* [strowi/deploy:latest](https://hub.docker.com/repository/docker/strowi/deploy)
+* [registry.gitlab.com/strowi/deploy:latest](https://gitlab.com/strowi/deploy)
+
+This is a general-purpose deploy-container for deploying *k8s/
 docker-compose* with *gitlab*.
 
 Executable scripts:
