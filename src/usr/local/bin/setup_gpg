@@ -1,0 +1,11 @@
+#!/bin/bash
+
+setup_gpg() {
+  echo "## importing gpg-key"
+  if test -n "$CI_GPG_PRIVATE_KEY"; then
+    echo "$CI_GPG_PRIVATE_KEY" | base64 -d | gpg --import &&
+      echo " - gpg-Key import successful"
+  fi
+}
+
+setup_gpg

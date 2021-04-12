@@ -1,0 +1,126 @@
+#!/bin/bash
+
+set -e
+
+# shellcheck source=src/usr/local/includes/common.sh
+source /usr/local/includes/common.sh
+# shellcheck source=src/usr/local/includes/k8.sh
+source /usr/local/includes/k8.sh
+
+#### end of functions #####
+
+HELM_CHART_DIR="${HELM_CHART_DIR:-$PWD/helm}"
+TEMPLATE_SOURCE_DIR="${HELM_CHART_DIR}"
+TEMPLATE_TARGET_DIR="${HELM_BUILD_DIR:-$PWD/.deploy/envusbst}"
+
+# shellcheck disable=SC2089
+test -z "${HELM_OPTIONS}" && \
+HELM_OPTIONS="upgrade \
+  --install \
+  --atomic \
+  --wait \
+  --cleanup-on-fail \
+  --history-max 2 \
+  --description \"${CI_COMMIT_REF_SLUG}/${CI_COMMIT_SHORT_SHA:-no_sha_given}\" \
+  --namespace ${KUBE_NAMESPACE}"
+
+BASENAME="$(basename "$0")"
+TIMESTAMP="$(date +%d%m%y%H%M%S)"
+
+export BASENAME TIMESTAMP
+
+# envsubst_helm() {
+#   /usr/bin/envsubst \
+#     '${KUBE_NAMESPACE} \
+#     ${CI_ENVIRONMENT_SLUG} \
+#     ${CI_COMMIT_SHORT_SHA} \
+#     ${CI_COMMIT_REF_SLUG} \
+#     ${CI_PROJECT_PATH_SLUG}' \
+#     < "${HELM_CHART_DIR}/values.yaml" \
+#     > "${HELM_CHART_DIR}/values_${CI_ENVIRONMENT_SLUG}-${CI_COMMIT_REF_SLUG}.yaml"
+
+
+# envsubst_vars
+# TEMPLATE_TARGET_DIR - destination folders
+# TEMPLATE_SOURCE_DIR - source folder
+envsubst_vars() {
+
+  echo -e "\n\n# Templates:"
+
+  echo "  - creating folder $TEMPLATE_TARGET_DIR"
+  mkdir -p "$TEMPLATE_TARGET_DIR"
+
+  for file in \
+    Chart.yaml \
+    Chart.yml \
+    values.yaml \
+    values.yml \
+    values-${CI_ENVIRONMENT_SLUG}.yaml \
+    values-${CI_ENVIRONMENT_SLUG}.yml; do
+
+        # envsubst only existing environment vars
+    if [[ -f "$TEMPLATE_SOURCE_DIR/$file" ]]; then
+      echo "  - envsubsting template for: $TEMPLATE_SOURCE_DIR/$file -> $TEMPLATE_TARGET_DIR/$file"
+
+      /usr/bin/envsubst "$(env | cut -d= -f1 | sed -e 's/^/$/')" <"$TEMPLATE_SOURCE_DIR/$file" >"$TEMPLATE_TARGET_DIR/$file"
+      HELM_OPTIONS="${HELM_OPTIONS} -f $TEMPLATE_TARGET_DIR/$file"
+    fi
+
+  done
+}
+
+deploy_helm() {
+  echo -e "\n## Deploying to Kubernetes (HELM): ${CI_ENVIRONMENT_SLUG}"
+  echo "# TIMESTAMP=${TIMESTAMP}"
+
+  # setup context
+  echo -e "\n# testing k8s-connection:"
+  if kubectl cluster-info; then
+
+    if [[ -z "${DRY_RUN}" ]]; then
+      echo -e "\n# checking/creating namespace $KUBE_NAMESPACE"
+      # create namespace if not exists
+      kubectl get namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
+
+      # deploy
+      echo -e "\n# deploying to $KUBE_NAMESPACE... "
+
+      # shellcheck disable=SC2090,SC2086
+      helm ${HELM_OPTIONS} \
+        "${CI_ENVIRONMENT_SLUG}-${CI_PROJECT_NAME}" \
+        "${HELM_CHART_DIR}"
+
+      echo "ck_deployment{type=\"k8\", app=\"${KUBE_NAMESPACE}\"} $(date +%s)" >/tmp/metrics
+    else
+      echo "## running in DRY_RUN mode... not deploying "
+      echo "##"
+      echo "CMD: helm \
+        ${HELM_OPTIONS} \
+        --namespace ${KUBE_NAMESPACE} \
+        --dry-run \
+        ${CI_ENVIRONMENT_SLUG}-${CI_PROJECT_NAME} \
+        ${HELM_CHART_DIR}"
+
+      # shellcheck disable=SC2090,SC2086
+      helm \
+        ${HELM_OPTIONS} \
+        --dry-run \
+        ${CI_ENVIRONMENT_SLUG}-${CI_PROJECT_NAME} \
+        ${HELM_CHART_DIR}
+    fi
+
+    echo -e "\n# finished deploying to NS $KUBE_NAMESPACE...  :D "
+  else
+    echo -e "\n# ERROR: connecting to cluster $KUBE_CONTEXT"
+    exit 1
+  fi
+}
+
+## running order
+prep_kube_domain
+#prep_kube_imagePullSecret
+envsubst_vars
+deploy_helm
+push_metrics /tmp/metrics
+
+echo "# Finished, all successful (at least supposed to be down here...)"
