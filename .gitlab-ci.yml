@@ -10,7 +10,6 @@ stages:
   - build
   - test
   - release
-  - deploy
 
 
 # "build_image"                        -> "${CI_REGISTRY_IMAGE}"
@@ -47,6 +46,18 @@ dgoss:test:
   extends: .dgoss
   script:
     - dgoss_run ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA} sleep 5s
+
+release:
+  extends: .build
+  stage: release
+  script:
+    - release_latest
+    - docker tag "$CI_REGISTRY_IMAGE" "strowi/varnish"
+    - echo $DOCKER_TOKEN | docker login -u strowi --password-stdin
+    - docker push "strowi/varnish"
+  only:
+    - master
+
 
 # deploy-tests:
 #   stage: test
