@@ -85,6 +85,14 @@ deploy_helm() {
       # deploy
       echo -e "\n# deploying to $KUBE_NAMESPACE... "
 
+      echo -e "\n#  predeploying imagePullSecrets to $KUBE_NAMESPACE... "
+
+      for file in ${TEMPLATE_SOURCE_DIR}/00_imagePullSecret_*.yml; do
+        echo "\n#   - applying imagePullSecret $file"
+
+        kubectl -n "$KUBE_NAMESPACE" apply -f $file
+      done
+
       # shellcheck disable=SC2090,SC2086
       helm ${HELM_OPTIONS} \
         "${CI_ENVIRONMENT_SLUG}-${CI_PROJECT_NAME}" \
@@ -94,6 +102,13 @@ deploy_helm() {
     else
       echo "## running in DRY_RUN mode... not deploying "
       echo "##"
+
+      for file in ${TEMPLATE_SOURCE_DIR}/00_imagePullSecret_*.yml; do
+        echo "\n# applying imagePullSecret $file"
+
+        echo " - kubectl -n "$KUBE_NAMESPACE" apply -f $file"
+      done
+
       echo "CMD: helm \
         ${HELM_OPTIONS} \
         --namespace ${KUBE_NAMESPACE} \
@@ -118,7 +133,7 @@ deploy_helm() {
 
 ## running order
 prep_kube_domain
-#prep_kube_imagePullSecret
+prep_kube_imagePullSecret
 envsubst_vars
 deploy_helm
 push_metrics /tmp/metrics

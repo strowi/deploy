@@ -12,7 +12,7 @@ install_dco() {
       "mkdir -p /home/${SSH_USERNAME}/.local/bin \
         && which groups && ( groups|grep -q docker || sudo gpasswd -a \"${SSH_USERNAME}\" docker) ||  echo 'no groups-cmd found'"
 
-    rsync -avzz /usr/local/bin/docker-compose "${SSH_USERNAME}@${HOST}:/home/${SSH_USERNAME}/.local/bin/docker-compose"
+    rsync -cvzz /usr/local/bin/docker-compose "${SSH_USERNAME}@${HOST}:/home/${SSH_USERNAME}/.local/bin/docker-compose"
 
   done
   echo -e "######################################################################################################"
@@ -50,8 +50,14 @@ deploy_dco() {
           -e "ssh -q -o StrictHostKeyChecking=no" \
           --include-from=.rsync ./ "${SSH_USERNAME}@${HOST}:${SSH_REMOTE_DST}"
 
-      echo -en "\n## docker login                                           \n"
+      echo -en "\n## docker login -> $CI_REGISTRY                       \n"
       ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cd ${SSH_REMOTE_DST} && set -ae && docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY"
+
+      echo -en "\n## docker login -> ${CI_DEPENDENCY_PROXY_SERVER}      \n"
+      ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cd ${SSH_REMOTE_DST} && set -ae && docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_DEPENDENCY_PROXY_SERVER"
+
+      echo -en "\n## docker login -> ${CI_SERVER_HOST}      \n"
+      ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cd ${SSH_REMOTE_DST} && set -ae && docker login -u $CI_DEPENDENCY_PROXY_USER -p $CI_DEPENDENCY_PROXY_PASSWORD $CI_SERVER_HOST"
 
       echo -en "\n## copying CX_* variables to ${SSH_USERNAME}@${HOST}:${SSH_REMOTE_DST}/.env"
       env | grep "^CX_" | sed 's/^CX_//g' | ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cat >> ${SSH_REMOTE_DST}/.env"
