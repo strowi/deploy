@@ -49,8 +49,8 @@ RUN curl -L https://releases.rancher.com/cli2/v${RANCHER_CLI_VERSION}/rancher-li
   && echo "${RANCHER_CLI_MD5}  /usr/local/bin/rancher" | md5sum -c
 
 # install docker-compose
-ENV DOCKER_COMPOSE_MD5="7048a965a86e6eed1622e0990e9a7ab4"
-ENV DOCKER_COMPOSE_VERSION="1.24.1"
+ENV DOCKER_COMPOSE_MD5="8a50dee378793d19c8e0b634a74a8660"
+ENV DOCKER_COMPOSE_VERSION="1.28.5"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
   && chmod 0755 /usr/local/bin/docker-compose \
@@ -58,14 +58,14 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
 
 # install kubectl
 # curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-ENV KUBECTL_VERSION="1.18.14"
-ENV KUBECTL_MD5="a984b3494631876c0f2371ea44324b6b"
+ENV KUBECTL_VERSION="1.20.5"
+ENV KUBECTL_MD5="5ef4b0953a6efeb4cf6a629e3e6486ea"
 RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
   && chmod 0755 /usr/local/bin/kubectl \
   && kubectl version --client \
   && echo "${KUBECTL_MD5}  /usr/local/bin/kubectl" | md5sum -c
 
-ENV HELM_VERSION="3.5.2"
+ENV HELM_VERSION="3.5.4"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
