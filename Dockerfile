@@ -74,11 +74,7 @@ ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && git clone https://github.com/strowi/kubernetes-deploy /tmp/krane \
-  && cd /tmp/krane \
-  && git checkout dynamic-cluster-url \
-  && rake build \
-  && gem install --no-document pkg/krane-2.1.7.gem \
+  && gem install --no-document krane:2.1.7 \
     ejson \
     json \
     bigdecimal \
