@@ -69,12 +69,13 @@ ENV HELM_VERSION="3.5.4"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
-#ENV KRANE_DEPLOY_VERSION="2.1.5"
+# renovate: datasource=repology depName=krane versioning=loose
+ENV KRANE_VERSION="2.1.5"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && gem install --no-document krane:2.1.7 \
+  && gem install --no-document krane:${KRANE_VERSION} \
     ejson \
     json \
     bigdecimal \
