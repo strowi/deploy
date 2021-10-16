@@ -69,7 +69,7 @@ ENV HELM_VERSION="3.5.4"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
-# renovate: datasource=repology depName=nixpkgs/krane versioning=loose
+# renovate: datasource=repology depName=nix_unstable/krane versioning=loose
 ENV KRANE_VERSION="2.1.5"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
