@@ -44,7 +44,7 @@ RUN apk --update --no-cache add jq \
 # install rancher
 # renovate: datasource=github-releases depName=rancher/cli versioning=loose
 ENV RANCHER_CLI_VERSION="2.0.6"
-RUN curl -L https://github.com/rancher/cli/releases/download/v${RANCHER_CLI_VERSION}/rancher-linux-amd64-v${RANCHER_CLI_VERSION}.tar.gz \
+RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSION}/rancher-linux-amd64-${RANCHER_CLI_VERSION##v}.tar.gz \
   | tar xvz --strip-components=2 \
   && mv rancher /usr/local/bin/rancher \
   && rancher --version
