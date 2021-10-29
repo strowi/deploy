@@ -54,13 +54,12 @@ RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSI
 ENV DOCKER_COMPOSE_VERSION="1.28.5"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
-  && chmod 0755 /usr/local/bin/docker-compose \
-  && docker-compose version
+  && chmod 0755 /usr/local/bin/docker-compose
 
 # install kubectl
 # renovate: datasource=github-tags depName=kubernetes/kubectl versioning=loose
 ENV KUBECTL_VERSION="1.20.5"
-RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
   && chmod 0755 /usr/local/bin/kubectl \
   && kubectl version --client
 
@@ -71,7 +70,7 @@ RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.g
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="v2.3.0"
+ENV KRANE_VERSION="2.3.0"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
