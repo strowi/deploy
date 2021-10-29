@@ -70,7 +70,8 @@ ENV HELM_VERSION="3.5.0"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
-#ENV KRANE_DEPLOY_VERSION="2.1.5"
+# renovate: datasource=github-tags depName=shopify/krane versioning=loose
+ENV KRANE_VERSION="2.2.0"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
@@ -80,7 +81,7 @@ RUN mkdir -p /var/cache/apk \
     json \
     bigdecimal \
     rdoc \
-  && gem install --no-document krane -v 2.2.0 \
+  && gem install --no-document krane -v ${KRANE_VERSION} \
   && gem uninstall bundler rdoc \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \
