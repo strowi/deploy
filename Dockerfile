@@ -29,13 +29,13 @@ RUN apk --update --no-cache add \
 
 # envsubst
 # renovate: datasource=github-releases depName=a8m/envsubst versioning=loose
-ENV ENVSUBST_VERSION="1.1.0"
+ENV ENVSUBST_VERSION="v1.2.0"
 RUN curl -L https://github.com/a8m/envsubst/releases/download/v${ENVSUBST_VERSION}/envsubst-`uname -s`-`uname -m` -o /usr/local/bin/envsubst \
   && chmod +x /usr/local/bin/envsubst
 
 # install consul
 # renovate: datasource=github-releases depName=mantl/consul-cli versioning=loose
-ENV CONSUL_CLI_VERSION="0.3.0"
+ENV CONSUL_CLI_VERSION="v0.3.1"
 RUN apk --update --no-cache add jq \
   && curl -L https://github.com/mantl/consul-cli/releases/download/${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION##v}_linux_amd64.tar.gz \
   | tar xvz --strip-components=1 -C /usr/local/bin/ \
@@ -43,7 +43,7 @@ RUN apk --update --no-cache add jq \
 
 # install rancher
 # renovate: datasource=github-releases depName=rancher/cli versioning=loose
-ENV RANCHER_CLI_VERSION="2.0.6"
+ENV RANCHER_CLI_VERSION="v2.4.13"
 RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSION}/rancher-linux-amd64-${RANCHER_CLI_VERSION}.tar.gz \
   | tar xvz --strip-components=2 \
   && mv rancher /usr/local/bin/rancher \
@@ -66,12 +66,12 @@ RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes
 
 # install helm
 # renovate: datasource=github-releases depName=helm/helm versioning=loose
-ENV HELM_VERSION="3.5.0"
+ENV HELM_VERSION="v3.7.1"
 RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="2.2.0"
+ENV KRANE_VERSION="v2.3.0"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
