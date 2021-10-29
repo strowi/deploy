@@ -55,19 +55,19 @@ ENV DOCKER_COMPOSE_VERSION="1.28.5"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
   && chmod 0755 /usr/local/bin/docker-compose \
-  && echo "${DOCKER_COMPOSE_MD5}  /usr/local/bin/docker-compose" | md5sum -c
+  && docker-compose version
 
 # install kubectl
 # renovate: datasource=github-tags depName=kubernetes/kubectl versioning=loose
 ENV KUBECTL_VERSION="1.20.5"
-RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
   && chmod 0755 /usr/local/bin/kubectl \
   && kubectl version --client
 
 # install helm
 # renovate: datasource=github-releases depName=helm/helm versioning=loose
 ENV HELM_VERSION="3.5.0"
-RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
+RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
