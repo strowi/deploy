@@ -35,7 +35,7 @@ RUN curl -L https://github.com/a8m/envsubst/releases/download/v${ENVSUBST_VERSIO
 
 # install consul
 # renovate: datasource=github-releases depName=mantl/consul-cli versioning=loose
-ENV CONSUL_CLI_VERSION="0.3.1"
+ENV CONSUL_CLI_VERSION="0.3.0"
 RUN apk --update --no-cache add jq \
   && curl -L https://github.com/mantl/consul-cli/releases/download/v${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION}_linux_amd64.tar.gz \
   | tar xvz --strip-components=1 -C /usr/local/bin/ \
@@ -58,15 +58,15 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
   && echo "${DOCKER_COMPOSE_MD5}  /usr/local/bin/docker-compose" | md5sum -c
 
 # install kubectl
-# renovate: datasource=github-releases depName=kubernetes/kubectl versioning=loose
+# renovate: datasource=github-tags depName=kubernetes/kubectl versioning=loose
 ENV KUBECTL_VERSION="1.20.5"
 RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
   && chmod 0755 /usr/local/bin/kubectl \
   && kubectl version --client
 
 # install helm
-# renovate: datasource=github-releases depName=helm/helm  versioning=loose
-ENV HELM_VERSION="3.5.4"
+# renovate: datasource=github-releases depName=helm/helm versioning=loose
+ENV HELM_VERSION="3.5.0"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
