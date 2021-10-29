@@ -1,6 +1,4 @@
-FROM bitnami/kubectl:1.20.5
-
-FROM alpine:3.13
+FROM alpine:3.14
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
 ENV PUSHGATEWAY=""
@@ -30,27 +28,29 @@ RUN apk --update --no-cache add \
     /var/cache/*
 
 # envsubst
-RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-`uname -s`-`uname -m` -o /usr/local/bin/envsubst \
+# renovate: datasource=github-releases depName=a8m/envsubst versioning=loose
+ENV ENVSUBST_VERSION="1.1.0"
+RUN curl -L https://github.com/a8m/envsubst/releases/download/v${ENVSUBST_VERSION}/envsubst-`uname -s`-`uname -m` -o /usr/local/bin/envsubst \
   && chmod +x /usr/local/bin/envsubst
 
 # install consul
 # renovate: datasource=github-releases depName=mantl/consul-cli versioning=loose
-ENV CONSUL_CLI_VERSION="0.3.0"
+ENV CONSUL_CLI_VERSION="0.3.1"
 RUN apk --update --no-cache add jq \
   && curl -L https://github.com/mantl/consul-cli/releases/download/v${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION}_linux_amd64.tar.gz \
-  | tar xvz --strip-components=1 -C /usr/local/bin/
+  | tar xvz --strip-components=1 -C /usr/local/bin/ \
+  && consul-cli version
 
 # install rancher
+# renovate: datasource=github-releases depName=rancher/cli versioning=loose
 ENV RANCHER_CLI_VERSION="2.0.6"
-ENV RANCHER_CLI_MD5="bf7dfb531b68ba9cc825e9e631e37be8"
-RUN curl -L https://releases.rancher.com/cli2/v${RANCHER_CLI_VERSION}/rancher-linux-amd64-v${RANCHER_CLI_VERSION}.tar.gz \
+RUN curl -L https://github.com/rancher/cli/releases/download/v${RANCHER_CLI_VERSION}/rancher-linux-amd64-v${RANCHER_CLI_VERSION}.tar.gz \
   | tar xvz --strip-components=2 \
   && mv rancher /usr/local/bin/rancher \
-  && rancher --version \
-  && echo "${RANCHER_CLI_MD5}  /usr/local/bin/rancher" | md5sum -c
+  && rancher --version
 
 # install docker-compose
-ENV DOCKER_COMPOSE_MD5="8a50dee378793d19c8e0b634a74a8660"
+# renovate: datasource=github-releases depName=docker/compose versioning=loose
 ENV DOCKER_COMPOSE_VERSION="1.28.5"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
@@ -58,28 +58,29 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
   && echo "${DOCKER_COMPOSE_MD5}  /usr/local/bin/docker-compose" | md5sum -c
 
 # install kubectl
-# curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+# renovate: datasource=github-releases depName=kubernetes/kubectl versioning=loose
 ENV KUBECTL_VERSION="1.20.5"
-ENV KUBECTL_MD5="5ef4b0953a6efeb4cf6a629e3e6486ea"
-COPY --from=0 /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
-RUN kubectl version --client
+RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
+  && chmod 0755 /usr/local/bin/kubectl \
+  && kubectl version --client
 
-# renovate: datasource=repology depName=alpine_edge/helm versioning=loose
+# install helm
+# renovate: datasource=github-releases depName=helm/helm  versioning=loose
 ENV HELM_VERSION="3.5.4"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
-# renovate: datasource=repology depName=nix_unstable/krane versioning=loose
-ENV KRANE_VERSION="2.3.0"
+#ENV KRANE_DEPLOY_VERSION="2.1.5"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && gem install --no-document krane:${KRANE_VERSION} \
+  && gem install \
     ejson \
     json \
     bigdecimal \
     rdoc \
+  && gem install --no-document krane -v 2.2.0 \
   && gem uninstall bundler rdoc \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \
