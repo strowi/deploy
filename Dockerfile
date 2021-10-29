@@ -1,3 +1,6 @@
+FROM bitnami/kubectl:1.20.5
+
+
 FROM alpine:3.13
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
@@ -60,18 +63,17 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
 # curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 ENV KUBECTL_VERSION="1.20.5"
 ENV KUBECTL_MD5="5ef4b0953a6efeb4cf6a629e3e6486ea"
-RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
-  && chmod 0755 /usr/local/bin/kubectl \
-  && kubectl version --client \
+COPY --from=0 /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
+RUN kubectl version --client \
   && echo "${KUBECTL_MD5}  /usr/local/bin/kubectl" | md5sum -c
 
+# renovate: datasource=repology depName=alpine_edge/helm versioning=loose
 ENV HELM_VERSION="3.5.4"
 RUN curl --silent -L "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=repology depName=nix_unstable/krane versioning=loose
 ENV KRANE_VERSION="2.3.0"
-
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
