@@ -34,9 +34,8 @@ RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-`u
   && chmod +x /usr/local/bin/envsubst
 
 # install consul
-# renovate: datasource=repology depName=openpkg_current/consul-cli versioning=loose
+# renovate: datasource=github-releases depName=mantl/consul-cli versioning=loose
 ENV CONSUL_CLI_VERSION="0.3.1"
-
 RUN apk --update --no-cache add jq \
   && curl -L https://github.com/mantl/consul-cli/releases/download/v${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION}_linux_amd64.tar.gz \
   | tar xvz --strip-components=1 -C /usr/local/bin/
