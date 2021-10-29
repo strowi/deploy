@@ -1,6 +1,5 @@
 FROM bitnami/kubectl:1.20.5
 
-
 FROM alpine:3.13
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
@@ -35,12 +34,12 @@ RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-`u
   && chmod +x /usr/local/bin/envsubst
 
 # install consul
+# renovate: datasource=repology depName=openpkg_current/consul-cli versioning=loose
 ENV CONSUL_CLI_VERSION="0.3.1"
-ENV CONSUL_MD5="cbeb30c2f2794dd98ef01f53b2e81d20"
+
 RUN apk --update --no-cache add jq \
   && curl -L https://github.com/mantl/consul-cli/releases/download/v${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION}_linux_amd64.tar.gz \
-  | tar xvz --strip-components=1 -C /usr/local/bin/ \
-  && echo "${CONSUL_MD5}  /usr/local/bin/consul-cli"  | md5sum -c
+  | tar xvz --strip-components=1 -C /usr/local/bin/
 
 # install rancher
 ENV RANCHER_CLI_VERSION="2.0.6"
@@ -64,8 +63,7 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
 ENV KUBECTL_VERSION="1.20.5"
 ENV KUBECTL_MD5="5ef4b0953a6efeb4cf6a629e3e6486ea"
 COPY --from=0 /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
-RUN kubectl version --client \
-  && echo "${KUBECTL_MD5}  /usr/local/bin/kubectl" | md5sum -c
+RUN kubectl version --client
 
 # renovate: datasource=repology depName=alpine_edge/helm versioning=loose
 ENV HELM_VERSION="3.5.4"
