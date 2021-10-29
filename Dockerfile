@@ -37,7 +37,7 @@ RUN curl -L https://github.com/a8m/envsubst/releases/download/v${ENVSUBST_VERSIO
 # renovate: datasource=github-releases depName=mantl/consul-cli versioning=loose
 ENV CONSUL_CLI_VERSION="0.3.0"
 RUN apk --update --no-cache add jq \
-  && curl -L https://github.com/mantl/consul-cli/releases/download/v${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION}_linux_amd64.tar.gz \
+  && curl -L https://github.com/mantl/consul-cli/releases/download/${CONSUL_CLI_VERSION}/consul-cli_${CONSUL_CLI_VERSION##}_linux_amd64.tar.gz \
   | tar xvz --strip-components=1 -C /usr/local/bin/ \
   && consul-cli version
 
