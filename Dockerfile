@@ -1,3 +1,5 @@
+FROM bitnami/kubectl:1.20.5
+
 FROM alpine:3.13
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
@@ -57,10 +59,9 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
   && chmod 0755 /usr/local/bin/docker-compose
 
 # install kubectl
-# renovate: datasource=github-tags depName=kubernetes/kubectl versioning=loose
-ENV KUBECTL_VERSION="1.20.0"
-RUN curl -L -o /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl" \
-  && chmod 0755 /usr/local/bin/kubectl \
+COPY --from=0 /opt/bitnami/kubectl/bin/kubectl /usr/local/bin/kubectl
+RUN chmod 0755 /usr/local/bin/kubectl \
+  && chown root:root /usr/local/bin/kubectl \
   && kubectl version --client
 
 # install helm
