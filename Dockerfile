@@ -1,6 +1,6 @@
-FROM bitnami/kubectl:1.20.5
+FROM bitnami/kubectl:1.22.3
 
-FROM alpine:3.13
+FROM alpine:3.14
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
 ENV PUSHGATEWAY=""
@@ -53,7 +53,7 @@ RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSI
 
 # install docker-compose
 # renovate: datasource=github-releases depName=docker/compose versioning=loose
-ENV DOCKER_COMPOSE_VERSION="v2.0.1"
+ENV DOCKER_COMPOSE_VERSION="v2.1.0"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
   && chmod 0755 /usr/local/bin/docker-compose
