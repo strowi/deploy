@@ -76,7 +76,7 @@ ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && gem install --user \
+  && gem install --user-install \
     ejson \
     json \
     bigdecimal \
