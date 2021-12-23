@@ -2,7 +2,7 @@ FROM bitnami/kubectl:1.23.1
 
 FROM alpine:3.12
 
-ENV PATH="$PATH:/usr/local/bundle/bin/"
+ENV PATH="$PATH:/root/.gem/ruby/2.7.0/bin/"
 ENV PUSHGATEWAY=""
 ENV CONSUL_SERVER=""
 
@@ -76,19 +76,20 @@ ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && gem install --user-install \
+  && gem install --user-install --no-document \
     ejson \
     json \
     bigdecimal \
     rdoc \
-  && gem install --no-document krane -v ${KRANE_VERSION//v} \
+    activesupport:6.1.4.3 \
+    krane:${KRANE_VERSION//v} \
   && gem uninstall bundler rdoc \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \
   && rm -fr \
     /var/cache/* \
+    /root/.gem/ruby/*/cache/* \
     /usr/local/bundle/cache \
-    /root/.gem \
   && mkdir -p /var/cache/apk
 
 
