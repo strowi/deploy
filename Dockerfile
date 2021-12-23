@@ -1,6 +1,6 @@
 FROM bitnami/kubectl:1.23.1
 
-FROM alpine:3.15
+FROM alpine:3.14
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
 ENV PUSHGATEWAY=""
