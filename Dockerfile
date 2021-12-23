@@ -1,6 +1,6 @@
 FROM bitnami/kubectl:1.23.1
 
-FROM alpine:3.13
+FROM alpine:3.14
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
 ENV PUSHGATEWAY=""
@@ -81,7 +81,7 @@ RUN mkdir -p /var/cache/apk \
     json \
     bigdecimal \
     rdoc \
-  && gem install --no-document krane -v ${KRANE_VERSION} \
+  && gem install --no-document krane -v ${KRANE_VERSION//v} \
   && gem uninstall bundler rdoc \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \
