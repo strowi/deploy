@@ -1,6 +1,6 @@
 FROM bitnami/kubectl:1.23.1
 
-FROM alpine:3.14
+FROM alpine:3.15
 
 ENV PATH="$PATH:/usr/local/bundle/bin/"
 ENV PUSHGATEWAY=""
@@ -76,7 +76,7 @@ ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && gem install \
+  && gem install --user \
     ejson \
     json \
     bigdecimal \
