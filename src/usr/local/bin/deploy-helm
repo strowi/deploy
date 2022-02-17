@@ -87,10 +87,11 @@ deploy_helm() {
 
       echo -e "\n#  predeploying imagePullSecrets to $KUBE_NAMESPACE... "
 
+      # shellcheck disable=SC2231
       for file in ${TEMPLATE_SOURCE_DIR}/00_imagePullSecret_*.yml; do
-        echo "\n#   - applying imagePullSecret $file"
+        echo "#   - applying imagePullSecret $file"
 
-        kubectl -n "$KUBE_NAMESPACE" apply -f $file
+        kubectl -n "$KUBE_NAMESPACE" apply -f "$file"
       done
 
       # shellcheck disable=SC2090,SC2086
@@ -103,10 +104,11 @@ deploy_helm() {
       echo "## running in DRY_RUN mode... not deploying "
       echo "##"
 
+      # shellcheck disable=SC2231
       for file in ${TEMPLATE_SOURCE_DIR}/00_imagePullSecret_*.yml; do
-        echo "\n# applying imagePullSecret $file"
+        echo "# applying imagePullSecret $file"
 
-        echo " - kubectl -n "$KUBE_NAMESPACE" apply -f $file"
+        echo " - kubectl -n $KUBE_NAMESPACE apply -f $file"
       done
 
       echo "CMD: helm \
