@@ -2,6 +2,7 @@
 
 set -e
 
+# shellcheck disable=SC1091
 test -f .ckenv && source .ckenv || echo "CKENV: missing!"
 
 include /usr/local/includes/common.sh
@@ -15,17 +16,17 @@ sync(){
     echo -e "## deploying to: ${SSH_USERNAME}@${HOST}:${SSH_REMOTE_DST} \n"
     echo -en "## rsync                                                  \n"
 
-    ${SSH_CMD} ${SSH_USERNAME}@${HOST} "mkdir -p ${SSH_REMOTE_DST}"
+    ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "mkdir -p ${SSH_REMOTE_DST}"
     test -f .rsync \
       && rsync --verbose --delete -a \
         -e "ssh -q -o StrictHostKeyChecking=no" \
-        --include-from=.rsync ./ ${SSH_USERNAME}@${HOST}:${SSH_REMOTE_DST}
+        --include-from=.rsync ./ "${SSH_USERNAME}@${HOST}:${SSH_REMOTE_DST}"
 
     echo -en "\n## copying CX_* variables to ${SSH_USERNAME}@${HOST}:${SSH_REMOTE_DST}/.env"
-    env|grep "^CX_" | sed 's/^CX_//g' | ${SSH_CMD} ${SSH_USERNAME}@${HOST} "cat > ${SSH_REMOTE_DST}/.env"
+    env|grep "^CX_" | sed 's/^CX_//g' | ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cat > ${SSH_REMOTE_DST}/.env"
 
     echo -en "\n## post-deploy                      "
-    ${SSH_CMD} ${SSH_USERNAME}@${HOST} "cd ${SSH_REMOTE_DST} && set -ae &&  test -f ./deploy.post.sh && ./deploy.post.sh|| echo 'no deploy.post.sh'"
+    ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cd ${SSH_REMOTE_DST} && set -ae &&  test -f ./deploy.post.sh && ./deploy.post.sh|| echo 'no deploy.post.sh'"
 
       echo "ck_deployment{type=\"sync\", app=\"${CI_PROJECT_PATH}\"} $(date +%s)" > /tmp/metrics
     echo -e "######################################################################################################"

@@ -2,9 +2,6 @@
 
 set -e
 
-# shellcheck source=src/usr/local/includes/yaml.sh
-source /usr/local/includes/yaml.sh
-
 # push_metrics $1
 # $1 - path to a prometheus-compatible metrics-file
 push_metrics() {
