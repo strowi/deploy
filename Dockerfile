@@ -1,4 +1,4 @@
-FROM bitnami/kubectl:1.23.3
+FROM bitnami/kubectl:1.23.4
 
 FROM alpine:3.15
 
