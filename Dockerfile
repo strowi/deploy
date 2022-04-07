@@ -45,7 +45,7 @@ RUN apk --update --no-cache add jq \
 
 # install rancher
 # renovate: datasource=github-releases depName=rancher/cli versioning=loose
-ENV RANCHER_CLI_VERSION="v2.6.0"
+ENV RANCHER_CLI_VERSION="v2.6.4"
 RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSION}/rancher-linux-amd64-${RANCHER_CLI_VERSION}.tar.gz \
   | tar xvz --strip-components=2 \
   && mv rancher /usr/local/bin/rancher \
@@ -53,7 +53,7 @@ RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSI
 
 # install docker-compose
 # renovate: datasource=github-releases depName=docker/compose versioning=loose
-ENV DOCKER_COMPOSE_VERSION="v2.3.3"
+ENV DOCKER_COMPOSE_VERSION="v2.4.1"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
   && chmod 0755 /usr/local/bin/docker-compose
@@ -71,7 +71,7 @@ RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.g
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="v2.4.2"
+ENV KRANE_VERSION="v2.4.6"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
