@@ -66,7 +66,7 @@ RUN chmod 0755 /usr/local/bin/kubectl \
 
 # install helm
 # renovate: datasource=github-releases depName=helm/helm versioning=loose
-ENV HELM_VERSION="v3.8.1"
+ENV HELM_VERSION="v3.8.2"
 RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
