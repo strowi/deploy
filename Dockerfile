@@ -76,22 +76,22 @@ ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake \
-  && gem install --user-install --no-document \
+  && gem install --no-document \
     ejson \
     json \
     bigdecimal \
     rdoc \
     activesupport:6.1.4.3 \
     krane:${KRANE_VERSION//v} \
-  && gem uninstall bundler rdoc \
+  && gem uninstall bundler \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \
   && rm -fr \
     /var/cache/* \
     /root/.gem/ruby/*/cache/* \
     /usr/local/bundle/cache \
-  && mkdir -p /var/cache/apk
-
+  && mkdir -p /var/cache/apk \
+  && krane version
 
 COPY src/ /
 
