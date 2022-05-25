@@ -32,7 +32,7 @@ RUN apk --update --no-cache add \
 # envsubst
 # renovate: datasource=github-releases depName=a8m/envsubst versioning=loose
 ENV ENVSUBST_VERSION="v1.2.0"
-RUN curl -L https://github.com/a8m/envsubst/releases/download/v${ENVSUBST_VERSION}/envsubst-`uname -s`-`uname -m` -o /usr/local/bin/envsubst \
+RUN curl -L https://github.com/a8m/envsubst/releases/download/v${ENVSUBST_VERSION}/envsubst-Linux-x86_64 -o /usr/local/bin/envsubst \
   && chmod +x /usr/local/bin/envsubst
 
 # install consul
