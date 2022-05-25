@@ -44,9 +44,9 @@ release:
   stage: release
   script:
     - release_latest
-    - docker tag "$CI_REGISTRY_IMAGE" "strowi/$CI_PROJECT_NAME"
+    - docker tag "$CI_REGISTRY_IMAGE" "strowi/$CI_PROJECT_NAME:latest"
     - echo $DOCKER_TOKEN | docker login -u strowi --password-stdin
-    - docker push "strowi/$CI_PROJECT_NAME"
+    - docker push "strowi/$CI_PROJECT_NAME:latest"
   only:
     - master
 
