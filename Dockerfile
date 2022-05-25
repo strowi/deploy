@@ -1,6 +1,6 @@
 FROM bitnami/kubectl:1.23.5
 
-FROM alpine:3.15
+FROM alpine:3.16
 
 ENV PATH="$PATH:/root/.gem/ruby/2.7.0/bin/"
 ENV PUSHGATEWAY=""
@@ -71,7 +71,7 @@ RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.g
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="v2.4.6"
+ENV KRANE_VERSION="v2.4.7"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
