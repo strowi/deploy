@@ -20,7 +20,7 @@ if [[ -n "${RANCHER_URL}" ]] && [[ -n "${RANCHER_TOKEN}" ]] && [[ "${RANCHER_CLU
   # login using using specific cluster and retrieved project ID as context
   rancher login ${RANCHER_URL} --token ${RANCHER_TOKEN} --name ${RANCHER_CLUSTER} --context "${CONTEXT_ID}"
 
- KUBE_CONTEXT="${RANCHER_CLUSTER}"
+  export KUBE_CONTEXT="${RANCHER_CLUSTER}"
 else
   echo "## One of RANCHER_(URL|TOKEN|CLUSTER) missing, login to rancher failed"
   echo "In order to deploy to Rancher, those variables are needed."
