@@ -27,7 +27,7 @@ prep_kube_domain() {
     # needs a fully qualified certificate, otherwise it will prompt for input
     echo 1 | rancher login "${RANCHER_URL}" --token "${RANCHER_TOKEN}"
     rancher cluster kubeconfig "${RANCHER_CLUSTER}" > ${KUBECONFIG}
-    kubectl config set-context --current --namespace="${KUBE_NAMESPACE}"
+    KUBE_CONTEXT="${RANCHER_CLUSTER}"
 
   else
     echo "In order to deploy to Kubernetes, either the variables KUBE_(URL|NAMESPACE|TOKEN)"
