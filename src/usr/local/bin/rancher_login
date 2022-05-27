@@ -14,14 +14,8 @@ if [[ -n "${RANCHER_URL}" ]] && [[ -n "${RANCHER_TOKEN}" ]] && [[ "${RANCHER_CLU
   # retrieve kube config for specific cluster and save to a local file
   rancher cluster kubeconfig "${RANCHER_CLUSTER}" > ${KUBECONFIG}
 
-  # retrieve specific namespace project ID, in this case 'default'
-  CONTEXT_ID=$(kubectl get ns default -o jsonpath="{.metadata.annotations.field\.cattle\.io/projectId}")
-
-  # login using using specific cluster and retrieved project ID as context
-  rancher login ${RANCHER_URL} --token ${RANCHER_TOKEN} --name ${RANCHER_CLUSTER} --context "${CONTEXT_ID}"
-
   export KUBE_CONTEXT="${RANCHER_CLUSTER}"
 else
-  echo "## One of RANCHER_(URL|TOKEN|CLUSTER) missing, login to rancher failed"
-  echo "In order to deploy to Rancher, those variables are needed."
+
+  echo "## All of RANCHER_(URL|TOKEN|CLUSTER) required! Login to rancher failed."
 fi

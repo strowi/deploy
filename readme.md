@@ -14,10 +14,10 @@ docker-compose* with *gitlab*.
 
 Executable scripts:
 
-- `deploy-k8` (Kubernetes)
-- `deploy-dco` (docker-compose)
-- `consul_update` (monitoring-bare-metal)
-- `setup_gpg` (will import the CI_GPG_PRIVATE_KEY to gpg (for git-crypt..))
+* `deploy-k8` (Kubernetes)
+* `deploy-dco` (docker-compose)
+* `consul_update` (monitoring-bare-metal)
+* `setup_gpg` (will import the CI_GPG_PRIVATE_KEY to gpg (for git-crypt..))
 
 ```bash
 CI_GPG_PRIVATE_KEY INFO:
@@ -32,9 +32,9 @@ sub   rsa3072 2018-10-31 [E] [verfällt: 2025-10-28]
 
 Well.. read on:
 
-- [kubernetes](doc/kubernetes.md)
-- [docker-compose](doc/docker-compose.md)
-- [consul](doc/consul.md)
-- [AWS](doc/aws.md)
+* [kubernetes](doc/kubernetes.md)
+* [docker-compose](doc/docker-compose.md)
+* [consul](doc/consul.md)
+* [AWS](doc/aws.md)
 
-- [WOK-Compatibility](doc/wok.md)
+* [WOK-Compatibility](doc/wok.md)
