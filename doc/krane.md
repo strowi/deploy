@@ -8,7 +8,7 @@
 (erb-)rendered to $container:$PWD/.deploy/kranea
 deployed from push metrics (if any)
 
-- preps KUBE_CONTEXT from KUBE_(URL|TOKEN|NAMESPACE) or KUBECONFIaG
+- preps KUBE_CONTEXT from `KUBE_(URL|TOKEN|NAMESPACE)`, `KUBECONFIG` or `RANCHER_(URL|TOKEN|CLUSTER) + KUBE_NAMESPACE`
 - (preps configMaps)
 - adds registry-credentials from `CK_REGISTRY_SECRET_BASE64_*` variables
 - imports WOK-variables from `project.yml` to environment-variables
