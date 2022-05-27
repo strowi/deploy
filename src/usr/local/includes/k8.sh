@@ -14,9 +14,9 @@ prep_kube_domain() {
     kubectl config set-context "$KUBE_NAMESPACE" --cluster="$KUBE_NAMESPACE" --user="$KUBE_NAMESPACE" --namespace="$KUBE_NAMESPACE"
     kubectl config use-context "$KUBE_NAMESPACE"
     KUBE_CONTEXT="${KUBE_NAMESPACE}"
-
   elif [ -n "${KUBE_CONTEXT}" ]; then
     echo "## found only KUBE_CONTEXT, using ${KUBE_CONTEXT}"
+  else
     echo "In order to deploy to Kubernetes, either the variables KUBE_(URL|NAMESPACE|TOKEN)"
     echo "or just the KUBE_CONTEXT variable must be set!"
     echo "You can do it in project settings or defining a secret variable at group, project or admin level"
