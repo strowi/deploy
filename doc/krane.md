@@ -8,7 +8,8 @@
 (erb-)rendered to $container:$PWD/.deploy/kranea
 deployed from push metrics (if any)
 
-- preps KUBE_CONTEXT from KUBE_(URL|TOKEN|NAMESPACE) or KUBECONFIaG
+- preps KUBE_CONTEXT from `KUBE_(URL|TOKEN|NAMESPACE)`, `KUBECONFIG`
+- login to rancher and retrieve the kubeconfig
 - (preps configMaps)
 - adds registry-credentials from `CK_REGISTRY_SECRET_BASE64_*` variables
 - imports WOK-variables from `project.yml` to environment-variables
@@ -73,6 +74,7 @@ metadata:
   name: hub.registry.net
 type: kubernetes.io/dockerconfigjson
 ```
+
 ## Secrets
 
 See [upstream doc](https://github.com/shopify/krane#deploying-kubernetes-secrets-from-ejson) on howto encrypt your secrets passwords within git.
@@ -129,6 +131,38 @@ deploy:k8s:ci:
   only:
     - master
 ```
+
+## Rancher-Login
+
+Since recently rancher has included the option to select clusters based on their name instead of their ID.
+That makes it possible to automate the step of getting the credentials for cluster XY.
+
+The script `rancher_login` is quite simple and will:
+
+1. login to the 1st context of `$RANCHER_URL` with token `$RANCHER_TOKEN`
+2. retrieve the `KUBECONFIG` from `$RANCHER_CLUSTER`, writing it to `/tmp/deploy-kube-config`
+3. export the `KUBE_CONTEXT` named `$RANCHER_CLUSTER` for use with the rest of the deploy-tools.
+
+Example:
+
+```yaml
+---
+deploy:
+  stage: deploy
+  image:
+    name: strowi/deploy:latest
+  variables:
+    RANCHER_URL: https://rancher.aedifion.eu
+    RANCHER_TOKEN: xxxxx
+    RANCHER_CLUSTER: cluster-xy
+    KUBE_NAMESPACE: test
+  script:
+    - rancher_login
+    - deploy-k8s
+```
+
+This will retrieve the kubeconfig for the cluster named `cluster-xy` and deploy to the namespace 'test'.
+No need to save the KUBECONFIG for every cluster.;)
 
 ## Krane
 
@@ -188,6 +222,7 @@ This is hard-coded to:
 Example:
 
 ```yaml
+---
 metadata:
   labels:
     env: ${CI_ENVIRONMENT_SLUG}
