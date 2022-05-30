@@ -16,6 +16,20 @@ prep_kube_domain() {
     KUBE_CONTEXT="${KUBE_NAMESPACE}"
   elif [ -n "${KUBE_CONTEXT}" ]; then
     echo "## found only KUBE_CONTEXT, using ${KUBE_CONTEXT}"
+
+  elif [[ -n "${RANCHER_URL}" ]] && [[ -n "${RANCHER_TOKEN}" ]] && [[ "${RANCHER_CLUSTER}" ]]; then
+    # do not overwrite current KUBECONFIG if run locally
+    export KUBECONFIG=/tmp/deploy-kube-config
+    touch $KUBECONFIG && chmod go-rwx $KUBECONFIG
+
+    # needs a fully qualified certificate, otherwise it will prompt for input
+    echo 1 | rancher login "${RANCHER_URL}" --token "${RANCHER_TOKEN}"
+
+    # retrieve kube config for specific cluster and save to a local file
+    rancher cluster kubeconfig "${RANCHER_CLUSTER}" > ${KUBECONFIG}
+
+    export KUBE_CONTEXT="${RANCHER_CLUSTER}"
+
   else
     echo "In order to deploy to Kubernetes, either the variables KUBE_(URL|NAMESPACE|TOKEN)"
     echo "or just the KUBE_CONTEXT variable must be set!"
