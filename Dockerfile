@@ -82,7 +82,10 @@ RUN mkdir -p /var/cache/apk \
     bigdecimal \
     rdoc \
     activesupport:6.1.4.3 \
-    krane:${KRANE_VERSION//v} \
+  && git clone -b fix-api-path-discovery https://github.com/strowi/krane.git /tmp/krane \
+  && cd /tmp/krane \
+  && gem build \
+  && gem install krane:${KRANE_VERSION//v} \
   && gem uninstall bundler \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \

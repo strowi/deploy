@@ -62,6 +62,7 @@ So in your exporter-deployment to bare-metal, in the deployment-stage call:
 
 ```yaml
 ---
+deploy:
   script:
     - deploy-dco
     - consul_update node-exporter 9100 (service-name port)

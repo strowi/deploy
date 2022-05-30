@@ -76,9 +76,9 @@ template/imagePullSecret.yaml:
 
 ```yaml
 ---
-{{- if .Values.ck }} {{- if .Values.ck.imagePullSecret }}
-{{ .Values.ck.imagePullSecret |b64dec }}
-{{- end }}{{- end }}
+{{- if .Values.ck}} {{- if .Values.ck.imagePullSecret}}
+{{.Values.ck.imagePullSecret |b64dec}}
+{{- end}}{{- end}}
 ```
 
 Will deploy a helm-release named

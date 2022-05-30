@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -ex
+
+if [[ -n "${RANCHER_URL}" ]] && [[ -n "${RANCHER_TOKEN}" ]] && [[ "${RANCHER_CLUSTER}" ]]; then
+
+  # do not overwrite current KUBECONFIG if run locally
+  export KUBECONFIG=/tmp/deploy-kube-config
+  touch $KUBECONFIG && chmod go-rwx $KUBECONFIG
+
+  # needs a fully qualified certificate, otherwise it will prompt for input
+  echo 1 | rancher login "${RANCHER_URL}" --token "${RANCHER_TOKEN}"
+
+  # retrieve kube config for specific cluster and save to a local file
+  rancher cluster kubeconfig "${RANCHER_CLUSTER}" > ${KUBECONFIG}
+
+  export KUBE_CONTEXT="${RANCHER_CLUSTER}"
+else
+
+  echo "## All of RANCHER_(URL|TOKEN|CLUSTER) required! Login to rancher failed."
+fi

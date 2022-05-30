@@ -14,7 +14,6 @@ prep_kube_domain() {
     kubectl config set-context "$KUBE_NAMESPACE" --cluster="$KUBE_NAMESPACE" --user="$KUBE_NAMESPACE" --namespace="$KUBE_NAMESPACE"
     kubectl config use-context "$KUBE_NAMESPACE"
     KUBE_CONTEXT="${KUBE_NAMESPACE}"
-
   elif [ -n "${KUBE_CONTEXT}" ]; then
     echo "## found only KUBE_CONTEXT, using ${KUBE_CONTEXT}"
   else

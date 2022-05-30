@@ -1,2 +1,2 @@
-line_length:
-  code_blocks: false
+style '.mdl_style.rb'
+
