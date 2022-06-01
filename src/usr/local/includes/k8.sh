@@ -23,7 +23,7 @@ prep_kube_domain() {
     touch $KUBECONFIG && chmod go-rwx $KUBECONFIG
 
     # needs a fully qualified certificate, otherwise it will prompt for input
-    echo 1 | rancher login "${RANCHER_URL}" --token "${RANCHER_TOKEN}"
+    echo 1 | rancher login "${RANCHER_URL}" --token "${RANCHER_TOKEN}" ${RANCHER_LOGIN_OPTS}
 
     # retrieve kube config for specific cluster and save to a local file
     rancher cluster kubeconfig "${RANCHER_CLUSTER}" > ${KUBECONFIG}
