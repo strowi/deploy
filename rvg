@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "rvg"
+  cluster:
+    server: "https://rancher.aedifion.eu/k8s/clusters/c-v4n44"
+
+users:
+- name: "rvg"
+  user:
+    token: "kubeconfig-u-rwdlrzmv28:mlkr2rc6pzbxr9cmg5j2rqkt47jtbgwdhv7fzptxnpc8c8vsnmqg8t"
+
+
+contexts:
+- name: "rvg"
+  context:
+    user: "rvg"
+    cluster: "rvg"
+
+current-context: "rvg"
+
