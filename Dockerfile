@@ -1,4 +1,4 @@
-FROM bitnami/kubectl:1.23.5
+FROM bitnami/kubectl:1.27.1
 
 FROM alpine:3.16
 
@@ -31,7 +31,7 @@ RUN apk --update --no-cache add \
 
 # envsubst
 # renovate: datasource=github-releases depName=a8m/envsubst versioning=loose
-ENV ENVSUBST_VERSION="v1.2.0"
+ENV ENVSUBST_VERSION="v1.4.2"
 RUN curl -L https://github.com/a8m/envsubst/releases/download/${ENVSUBST_VERSION}/envsubst-Linux-x86_64 -o /usr/local/bin/envsubst \
   && chmod +x /usr/local/bin/envsubst
 
@@ -45,7 +45,7 @@ RUN apk --update --no-cache add jq \
 
 # install rancher
 # renovate: datasource=github-releases depName=rancher/cli versioning=loose
-ENV RANCHER_CLI_VERSION="v2.6.4"
+ENV RANCHER_CLI_VERSION="v2.7.0"
 RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSION}/rancher-linux-amd64-${RANCHER_CLI_VERSION}.tar.gz \
   | tar xvz --strip-components=2 \
   && mv rancher /usr/local/bin/rancher \
@@ -53,7 +53,7 @@ RUN curl -L https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSI
 
 # install docker-compose
 # renovate: datasource=github-releases depName=docker/compose versioning=loose
-ENV DOCKER_COMPOSE_VERSION="v2.4.1"
+ENV DOCKER_COMPOSE_VERSION="v2.17.3"
 RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-Linux-x86_64 \
     -o /usr/local/bin/docker-compose \
   && chmod 0755 /usr/local/bin/docker-compose
@@ -66,7 +66,7 @@ RUN chmod 0755 /usr/local/bin/kubectl \
 
 # install helm
 # renovate: datasource=github-releases depName=helm/helm versioning=loose
-ENV HELM_VERSION="v3.8.2"
+ENV HELM_VERSION="v3.11.3"
 RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
