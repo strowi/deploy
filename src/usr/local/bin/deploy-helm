@@ -88,7 +88,7 @@ deploy_helm() {
       echo -e "\n#  predeploying imagePullSecrets to $KUBE_NAMESPACE... "
 
       # shellcheck disable=SC2231
-      for file in ${TEMPLATE_SOURCE_DIR}/00_imagePullSecret_*.yml; do
+      for file in $(find ${TEMPLATE_SOURCE_DIR}/00_imagePullSecret_*.yml); do
         echo "#   - applying imagePullSecret $file"
 
         kubectl -n "$KUBE_NAMESPACE" apply -f "$file"
