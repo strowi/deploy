@@ -53,7 +53,7 @@ deploy-tests:
   stage: test
   extends: .k3d
   variables:
-    DRY_RUN: true
+    DRY_RUN: "true"
   script:
     - start_k3d
     - deploy-k8
