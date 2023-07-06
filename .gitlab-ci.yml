@@ -52,8 +52,7 @@ release:
 deploy-tests:
   stage: test
   extends: .k3d
-  variables:
-    DRY_RUN: "true"
+  environment: ci
   script:
     - start_k3d
     - deploy-k8
