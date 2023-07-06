@@ -49,10 +49,10 @@ release:
   only:
     - master
 
-
 deploy-tests:
   stage: test
   extends: .k3d
+  environment: ci
   script:
     - start_k3d
     - deploy-k8
