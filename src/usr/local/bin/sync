@@ -28,7 +28,7 @@ sync(){
     echo -en "\n## post-deploy                      "
     ${SSH_CMD} "${SSH_USERNAME}@${HOST}" "cd ${SSH_REMOTE_DST} && set -ae &&  test -f ./deploy.post.sh && ./deploy.post.sh|| echo 'no deploy.post.sh'"
 
-      echo "ck_deployment{type=\"sync\", app=\"${CI_PROJECT_PATH}\"} $(date +%s)" > /tmp/metrics
+      echo "deploy_date{type=\"sync\", app=\"${CI_PROJECT_PATH}\"} $(date +%s)" > /tmp/metrics
     echo -e "######################################################################################################"
   done
 }
