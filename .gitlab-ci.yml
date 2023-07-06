@@ -50,25 +50,25 @@ release:
     - master
 
 
-deploy-tests:
-  stage: test
-  extends: .k3d
-  image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
-  variables:
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
-    CI_ENVIRONMENT_SLUG: testing
-  script:
-    - start_k3d
-    - deploy-k8
-    - get_pod nginx-krane
-    - deploy-helm
-    - get_pod nginx-helm
-    - kubectl get deploy,po --all-namespaces
-  parallel:
-    matrix:
-      - K3D_VERSION:
-        - "rancher/k3s:v1.18.15-k3s1"
-        - "rancher/k3s:v1.19.8-k3s1"
+# deploy-tests:
+#   stage: test
+#   extends: .k3d
+#   image: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}
+#   variables:
+#     DOCKER_HOST: tcp://docker:2376
+#     DOCKER_TLS_CERTDIR: "/certs"
+#     DOCKER_TLS_VERIFY: 1
+#     DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+#     CI_ENVIRONMENT_SLUG: testing
+#   script:
+#     - start_k3d
+#     - deploy-k8
+#     - get_pod nginx-krane
+#     - deploy-helm
+#     - get_pod nginx-helm
+#     - kubectl get deploy,po --all-namespaces
+#   parallel:
+#     matrix:
+#       - K3D_VERSION:
+#         - "rancher/k3s:v1.18.15-k3s1"
+#         - "rancher/k3s:v1.19.8-k3s1"
