@@ -99,7 +99,7 @@ deploy_helm() {
         "${CI_ENVIRONMENT_SLUG}-${CI_PROJECT_NAME}" \
         "${HELM_CHART_DIR}"
 
-      echo "ck_deployment{type=\"k8\", app=\"${KUBE_NAMESPACE}\"} $(date +%s)" >/tmp/metrics
+      echo "deploy_date{type=\"k8\", app=\"${KUBE_NAMESPACE}\"} $(date +%s)" >/tmp/metrics
     else
       echo "## running in DRY_RUN mode... not deploying "
       echo "##"
