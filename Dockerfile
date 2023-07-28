@@ -17,6 +17,7 @@ RUN apk --update --no-cache add \
     openssl \
     openssh-client \
     curl \
+    diffutils \
     tar \
     gettext \
     gzip \
