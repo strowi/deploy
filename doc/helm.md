@@ -24,11 +24,11 @@ At first deploy-helm will:
 
 - preps KUBE_CONTEXT from KUBE_(URL|TOKEN|NAMESPACE) or KUBECONFIG
 - replaces all environment variables in following helm-files:
-  - *difference*: will only replace vars that actually exist!
-  - Chart.yaml|yml
-  - values.yaml|yml
-  - values-${CI_ENVIRONMENT_SLUG}.yaml|yml
-  - `$HELM_CHART_DIR/`      -> `-$PWD/.deploy/envusbst`
+  + *difference*: will only replace vars that actually exist!
+  + Chart.yaml|yml
+  + values.yaml|yml
+  + values-${CI_ENVIRONMENT_SLUG}.yaml|yml
+  + `$HELM_CHART_DIR/`      -> `-$PWD/.deploy/envusbst`
 
 - deploy the helm-chart like:
 
