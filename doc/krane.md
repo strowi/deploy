@@ -14,12 +14,12 @@ deployed from push metrics (if any)
 - adds registry-credentials from `CK_REGISTRY_SECRET_BASE64_*` variables
 - imports WOK-variables from `project.yml` to environment-variables
 - replaces all environment variables in manifests-folder:
-  - copy
+  + copy
     `$KUBE_MANIFEST_DIR`      -> `container:/tmp/source/manifests`
-  - envsubst
+  + envsubst
     `$KUBE_MANIFEST_DIR`      -> `$container:$PWD/.deploy/envsubst`
     **WATCH OUT** this will replace **ALL** "$XYZ", you can escape with "$$XYZ"
-  - ERB-render
+  + ERB-render
     `$container:$PWD/.deploy` -> `$container:$PWD/.deploy/krane`
 - deploys **global resources** from `$container:$PWD/.deploy/krane/global`
 - deploys **namespaced** resources from `$container:$PWD/.deploy/krane/`
