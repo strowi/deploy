@@ -72,7 +72,7 @@ RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.g
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="v3.1.0"
+ENV KRANE_VERSION="v2.4.9"
 ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
