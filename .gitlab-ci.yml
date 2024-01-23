@@ -48,7 +48,7 @@ release_latest:
     - crane copy "$CI_REGISTRY_IMAGE:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "strowi/$CI_PROJECT_NAME:latest"
     - test -n $CI_COMMIT_TAG && release_tag && crane copy "$CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}" "strowi/$CI_PROJECT_NAME:${CI_COMMIT_TAG}"
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH || $CI_COMMIT_TAG
       exists:
         - Dockerfile
 
