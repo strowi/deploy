@@ -51,7 +51,6 @@ release_latest:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       exists:
         - Dockerfile
-    - master
 
 # deploy-tests:
 #   stage: test
