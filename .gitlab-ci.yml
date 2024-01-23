@@ -3,8 +3,8 @@ include:
     file: '/build.yml'
   - project: 'strowi/ci-templates'
     file: '/tests.yml'
-  - project: 'strowi/ci-templates'
-    file: '/k3d.yml'
+  # - project: 'strowi/ci-templates'
+  #   file: '/k3d.yml'
 
 stages:
   - build
