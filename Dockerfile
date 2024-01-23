@@ -77,6 +77,12 @@ ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
 RUN mkdir -p /var/cache/apk \
   && apk update \
   && apk --no-cache add $BUILD_DEPS ruby-rake linux-headers \
+  && gem install --no-document \
+    ejson \
+    json \
+    bigdecimal \
+    rdoc \
+    activesupport:6.1.4.3 \
   && git clone -b $KRANE_VERSION https://github.com/strowi/krane.git /tmp/krane \
   && cd /tmp/krane \
   && gem build --output=krane-${KRANE_VERSION//v}.gem \
