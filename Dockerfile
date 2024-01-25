@@ -1,6 +1,6 @@
 FROM bitnami/kubectl:1.27.1
 
-FROM alpine:3.18
+FROM alpine:3.19
 
 ENV PATH="$PATH:/root/.gem/ruby/2.7.0/bin/"
 ENV PUSHGATEWAY=""
