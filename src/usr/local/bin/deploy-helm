@@ -138,6 +138,5 @@ prep_kube_domain
 prep_kube_imagePullSecret
 envsubst_vars
 deploy_helm
-push_metrics /tmp/metrics
 
 echo "# Finished, all successful (at least supposed to be down here...)"

@@ -38,7 +38,6 @@ prep_kube_configmaps
 prep_kube_imagePullSecret
 envsubst_vars
 deploy_k8
-push_metrics /tmp/metrics
 cleanup
 
 echo "# Finished, all successful (at least supposed to be down here...)"
