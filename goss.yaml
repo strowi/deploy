@@ -42,13 +42,6 @@ file:
     linked-to: /bin/tar
     filetype: symlink
     contains: []
-  /usr/local/bin/deploy-dco:
-    exists: true
-    mode: "0755"
-    owner: root
-    group: root
-    filetype: file
-    contains: []
   /usr/local/bin/deploy-k8:
     exists: true
     mode: "0755"
@@ -56,30 +49,7 @@ file:
     group: root
     filetype: file
     contains: []
-  /usr/local/bin/deploy-k8-sys:
-    exists: true
-    mode: "0777"
-    owner: root
-    group: root
-    linked-to: deploy-k8
-    filetype: symlink
-    contains: []
-  /usr/local/bin/docker-compose:
-    exists: true
-    mode: "0755"
-    owner: root
-    group: root
-    filetype: file
-    contains: []
   /usr/local/bin/kubectl:
-    exists: true
-    mode: "0755"
-    owner: root
-    group: root
-    filetype: file
-    contains: []
-
-  /usr/local/bin/consul_update:
     exists: true
     mode: "0755"
     owner: root

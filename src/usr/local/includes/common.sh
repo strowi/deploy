@@ -2,28 +2,6 @@
 
 set -e
 
-# push_metrics $1
-# $1 - path to a prometheus-compatible metrics-file
-push_metrics() {
-  if [[ -n "${PUSHGATEWAY}" ]] && [[ -f "/tmp/metrics" ]]; then
-    echo -e "\n\n# pushing metrics to ${PUSHGATEWAY}"
-
-    set +e
-    # shellcheck disable=2002
-    response=$( cat "$1" | curl --silent --write-out "%{http_code}" --data-binary @- "${PUSHGATEWAY}/metrics/job/deployment/instance/ci")
-
-    set -e
-    if [[ "$response" -ne 200 ]]; then
-      echo -e "  - FAILED, got a $response is the Pushgateway available?"
-      echo -e "    NOT FATAL, continuing... "
-      echo -e "   ( if this happens repeatedly, ask your friendly neighbourhood sysadmin)"
-    fi
-    echo -e "  - done, continuing... "
-  else
-    echo "  - Pushgateway NOT defined, just saying...!"
-  fi
-}
-
 # envsubst_vars
 # TEMPLATE_TARGET_DIR - destination folder
 # TEMPLATE_SOURCE_DIR - source folder
