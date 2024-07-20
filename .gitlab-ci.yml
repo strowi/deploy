@@ -62,6 +62,7 @@ release_tag:
   stage: release
   script:
     - release_tag
+    - release_dockerhub
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
