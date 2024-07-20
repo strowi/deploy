@@ -86,3 +86,17 @@ deploy-tests:
     matrix:
       - K3S_VERSION:
         - v1.28.9-k3s1
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      exists:
+        - Dockerfile
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      exists:
+        - Dockerfile
+    - if: $CI_COMMIT_BRANCH
+      exists:
+        - Dockerfile
+    - if: $CI_COMMIT_TAG
+      when: never
