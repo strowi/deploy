@@ -3,8 +3,8 @@ include:
     file: '/build.yml'
   - project: 'strowi/ci-templates'
     file: '/tests.yml'
-  # - project: 'strowi/ci-templates'
-  #   file: '/k3d.yml'
+  - project: 'strowi/ci-templates'
+    file: '/k3d.yml'
 
 stages:
   - build
@@ -82,4 +82,4 @@ deploy-tests:
   parallel:
     matrix:
       - K3S_VERSION:
-        - v1.28.10-k3s1
+        - v1.28.9-k3s1
