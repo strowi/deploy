@@ -1,3 +1,7 @@
+---
+variables:
+  DOCKERHUB_USER: strowi
+
 include:
   - project: 'strowi/ci-templates'
     file: '/build.yml'
@@ -44,29 +48,27 @@ release_latest:
   stage: release
   script:
     - release_latest
-    - echo $DOCKER_TOKEN | docker login -u strowi --password-stdin
-    - crane copy "$CI_REGISTRY_IMAGE:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "strowi/$CI_PROJECT_NAME:latest"
   rules:
     - if: $CI_COMMIT_TAG
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       exists:
         - Dockerfile
+    - when: never
 
-# "release_tag"                      -> "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}"
+# "release_tag"                      -> "${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}" + docker-hub
 release_tag:
   extends: .build
   stage: release
   script:
-    - echo $DOCKER_TOKEN | docker login -u strowi --password-stdin
-    - crane copy "$CI_REGISTRY_IMAGE:${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}" "strowi/$CI_PROJECT_NAME:${CI_COMMIT_TAG}"
+    - release_tag
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: never
     - if: $CI_COMMIT_TAG
       exists:
         - Dockerfile
-
+    - when: never
 
 deploy-tests:
   stage: test
