@@ -1,5 +1,14 @@
 FROM bitnami/kubectl:1.28.12
 
+FROM ruby:3.4 AS ruby
+
+# renovate: datasource=github-tags depName=shopify/krane versioning=loose
+ENV KRANE_VERSION="v3.7.2-fix-path"
+RUN git clone -b $KRANE_VERSION https://github.com/strowi/krane.git /tmp/krane \
+  && cd /tmp/krane \
+  && bundler install \
+  && gem build --output=/tmp/krane.gem
+
 FROM alpine:3.21
 
 ENV PATH="$PATH:/root/.gem/ruby/2.7.0/bin/"
@@ -54,22 +63,13 @@ ENV HELM_VERSION="v3.15.3"
 RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" \
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
-# renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="v3.7.2"
-ARG BUILD_DEPS="g++"
-RUN mkdir -p /var/cache/apk \
-  && apk update \
-  && apk --no-cache add $BUILD_DEPS \
-  && gem install --no-document \
-    krane:${KRANE_VERSION//v} \
-  && gem cleanup  \
-  && apk del --purge ${BUILD_DEPS} \
-  && rm -fr \
-    /var/cache/* \
-    /root/.gem/ruby/*/cache/* \
-    /usr/local/bundle/cache \
-  && mkdir -p /var/cache/apk \
-  && krane version
+ENV BUILD_DEPS="g++"
+COPY --from=ruby /tmp/krane.gem /tmp/krane.gem
+RUN apk add --no-cache $BUILD_DEPS \
+  && gem install /tmp/krane.gem \
+  && gem cleanup \
+  && apk del $BUILD_DEPS \
+  && rm -fr /tmp/*
 
 COPY src/ /
 
