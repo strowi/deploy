@@ -3,18 +3,17 @@ variables:
   DOCKERHUB_USER: strowi
 
 include:
-  - project: 'strowi/ci-templates'
-    file: '/build.yml'
-  - project: 'strowi/ci-templates'
-    file: '/tests.yml'
-  - project: 'strowi/ci-templates'
-    file: '/k3d.yml'
+  - project: "strowi/ci-templates"
+    file: "/build.yml"
+  - project: "strowi/ci-templates"
+    file: "/tests.yml"
+  - project: "strowi/ci-templates"
+    file: "/k3d.yml"
 
 stages:
   - build
   - test
   - release
-
 
 # "build_image"                        -> "${CI_REGISTRY_IMAGE}"
 # "build_image $sub_image ./sub_dir/"  -> "${CI_REGISTRY_IMAGE}/sub_name
@@ -86,7 +85,9 @@ deploy-tests:
   parallel:
     matrix:
       - K3S_VERSION:
-        - v1.28.9-k3s1
+          - v1.30.10-k3s1
+          - v1.31.6-k3s1
+          - v1.32.2-k3s1
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
       exists:
