@@ -55,22 +55,13 @@ RUN curl --silent -L "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.g
   | tar xzv --strip-components=1 -C /usr/local/bin/ linux-amd64/helm
 
 # renovate: datasource=github-tags depName=shopify/krane versioning=loose
-ENV KRANE_VERSION="master"
-ARG BUILD_DEPS="g++ make ruby-dev ruby-bundler"
+ENV KRANE_VERSION="v3.7.2"
+ARG BUILD_DEPS="g++"
 RUN mkdir -p /var/cache/apk \
   && apk update \
-  && apk --no-cache add $BUILD_DEPS ruby-rake linux-headers \
+  && apk --no-cache add $BUILD_DEPS \
   && gem install --no-document \
-    ejson \
-    json \
-    bigdecimal \
-    rdoc \
-    activesupport:6.1.4.3 \
-  && git clone -b $KRANE_VERSION https://github.com/strowi/krane.git /tmp/krane \
-  && cd /tmp/krane \
-  && gem build --output=krane-${KRANE_VERSION//v}.gem \
-  && gem install krane-${KRANE_VERSION//v}.gem \
-  && gem uninstall bundler \
+    krane:${KRANE_VERSION//v} \
   && gem cleanup  \
   && apk del --purge ${BUILD_DEPS} \
   && rm -fr \
